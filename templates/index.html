@@ -3,30 +3,96 @@
 <head>
     <title>IPO Form Filler</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        form input[type="number"],
+        form input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        form button[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
         .loading {
             display: none;
             text-align: center;
             margin-top: 20px;
         }
+
         .loading img {
             width: 150px;
+        }
+
+        .loading p {
+            color: #333;
+            font-size: 16px;
+            margin-top: 10px;
         }
     </style>
     <script>
         function showLoading() {
-            document.getElementById("loading-spinner").style.display = "block";
+            var loadingSpinner = document.getElementById("loading-spinner");
+            loadingSpinner.style.display = "block";
+            loadingSpinner.querySelector("p").textContent = "Converting...";
         }
     </script>
 </head>
 <body>
-    <h1>PDF Conversion</h1>
-    <form action="/convert" method="POST" onsubmit="showLoading()">
+    <h1>IPO Form Filler</h1>
+    <form action="/convert" method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
         <label for="number">Enter a number:</label>
-        <input type="number" name="number" id="number" required>
+        <input type="number" name="number" id="number" required><br><br>
+
+        <label for="pdf_files">Select PDF files:</label>
+        <input type="file" name="pdf_files" id="pdf_files" accept=".pdf" required multiple><br><br>
+
+        <label for="pdf_files">Select Excel:</label>
+        <input type="file" name="excel_file" id="excel_file" accept=".xlsx" required><br><br>
+
         <button type="submit">Convert</button>
         <div class="loading" id="loading-spinner">
             <img src="/static/loading.gif" alt="Loading">
-            <p>Converting...</p>
+            <p></p>
         </div>
     </form>
 </body>

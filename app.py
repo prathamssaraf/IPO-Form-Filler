@@ -1,29 +1,56 @@
-from flask import Flask, request, render_template
+from flask import Flask, flash, request, render_template, send_file
 from PIL import Image
 from pdf2image import convert_from_path
-from flask import send_file
-
-
+import os
 
 from form_filler_functions import printName, printAddress, printNumber, printEmail, printPAN, \
     printCDSL, printQuantity, printAmount, printWords, printAccNumber, printPrice, printBankName
 
 app = Flask(__name__)
 
+app.secret_key = "prathamsaraf"
+
+
 @app.route('/')
 def home():
     return render_template('index.html')
 
+
 @app.route('/convert', methods=['POST'])
+
 def convert():
+    # pdf_files
+    # pdf_files.clear()
+    # Get the uploaded PDF files from the form
+    pdf_files = request.files.getlist('pdf_files')
+
+    excel_file = request.files['excel_file']
+    excel_path = "formdata.xlsx"
+    excel_file.save(excel_path)
+
+    # Initialize a list to store the paths of converted PDFs
+    converted_pdf_paths = []
+
+    # Process each uploaded PDF file
+    for i, pdf_file in enumerate(pdf_files):
+        # Save the uploaded file to the server
+        pdf_path = f"form ({i}).pdf"
+        pdf_file.save(pdf_path)
+
+        # Get the number of iterations for this PDF
     n = int(request.form['number'])
+
+        # Convert and overlay images for each iteration
     convert_and_overlay_images(n)
     pdf_path = "output.pdf"
+    flash("Conversion completed successfully!")
+    pdf_files.clear()
     return send_file(pdf_path, as_attachment=True)
 
+
 def convert_and_overlay_images(n):
-    for i in range(0, n+1):
-        pdf_file = f'form ({i+1}).pdf'
+    for i in range(0, n):
+        pdf_file = f'form ({i}).pdf'
         images = convert_from_path(pdf_file, dpi=200)
         image_path = f'form_{i}.png'
         images[0].save(image_path, 'PNG')
@@ -48,6 +75,10 @@ def convert_and_overlay_images(n):
     pdf_path = "output.pdf"
     images[0].save(pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:])
 
+    for i in range(0, n):
+        os.remove(f'form ({i}).pdf')
+        os.remove(f'form_{i}.png')
+    os.remove("formdata.xlsx")
 
 if __name__ == '__main__':
     app.run(debug=True)
