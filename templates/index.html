@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IPO Form Filler</title>
+    <style>
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .loading img {
+            width: 150px;
+        }
+    </style>
+    <script>
+        function showLoading() {
+            document.getElementById("loading-spinner").style.display = "block";
+        }
+    </script>
+</head>
+<body>
+    <h1>PDF Conversion</h1>
+    <form action="/convert" method="POST" onsubmit="showLoading()">
+        <label for="number">Enter a number:</label>
+        <input type="number" name="number" id="number" required>
+        <button type="submit">Convert</button>
+        <div class="loading" id="loading-spinner">
+            <img src="/static/loading.gif" alt="Loading">
+            <p>Converting...</p>
+        </div>
+    </form>
+</body>
+</html>
