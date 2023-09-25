@@ -1,5 +1,4 @@
 from flask import Flask, flash, request, render_template, send_file
-import PIL
 from PIL import Image
 from pdf2image import convert_from_path
 import os
